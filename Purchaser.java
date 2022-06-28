@@ -1,4 +1,4 @@
-package vendingmachine;
+package purchaser;
 
 import java.util.Scanner;
 
@@ -14,21 +14,36 @@ public class Purchaser {
 		/**/
 	}
 	private static int Input() {//お金の投入
-		Scanner sc = new Scanner(System.in);
-		System.out.println("お金を投入してください");
-		int input = sc.nextInt();
-		
+		String inputtext = "";
+		int input = 0;
+		while(true) {
+			Scanner sc = new Scanner(System.in);
+			System.out.println("お金を投入してください");
+			inputtext = sc.next();
+			try{
+				input = Integer.parseInt(inputtext);
+				break;
+			}catch(java.lang.NumberFormatException e) {
+				System.out.println("金額を入力してください");
+			}
+		}
 		return input;
 	}
 	
 	private static int InputButton() {//ボタンの入力
+		String inputtext = "";
 		int inputbutton;
 		while(true) {//条件を満たすまでループ
 			Scanner sc = new Scanner(System.in);
 			System.out.println("ボタンを入力してください");
-			inputbutton = sc.nextInt();
-			if(inputbutton == -1 || (inputbutton >= 1 && inputbutton <= 7)) {
-				break;
+			inputtext = sc.next();
+			try{
+				inputbutton = Integer.parseInt(inputtext);
+				if(inputbutton == -1 || (inputbutton >= 1 && inputbutton <= 7)) {
+					break;
+				}
+			}catch(java.lang.NumberFormatException e) {
+				//System.out.println("正しいボタンを入力してください");
 			}
 		}
 		
