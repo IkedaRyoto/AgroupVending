@@ -9,7 +9,6 @@ public class CheckUse {
 		
 		if (use_check) {
 			//trueを返す
-			System.out.println(use_check);
 			return use_check;
 		} else {
 			//falseを返す
