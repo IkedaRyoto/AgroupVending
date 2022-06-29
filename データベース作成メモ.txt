@@ -1,0 +1,23 @@
+ mysql -u root -p
+
+create database vendingmachine;
+
+use vendingmachine
+
+create table product (ID varchar(5), NAME varchar(20), VALUE int, BUTTON tinyint PRIMARY KEY);
+
+load data local infile 'C:/Users/Owner/Documents/vm_table_data/product.csv' into table vendingmachine.product fields terminated by ',' enclosed by '"';
+
+select * from product;
+
+create table manege (BUTTON tinyint PRIMARY KEY, SUMBOTLE int, SUM int, STOCK tinyint);
+
+load data local infile 'C:/Users/Owner/Documents/vm_table_data/manage.csv' into table vendingmachine.manage fields terminated by ',' enclosed by '"';
+
+select * from manage;
+
+create table money (MONEY int PRIMARY KEY, NUM tinyint);
+
+load data local infile 'C:/Users/Owner/Documents/vm_table_data/money.csv' into table vendingmachine.money fields terminated by ',' enclosed by '"';
+
+select * from money;
