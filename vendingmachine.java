@@ -1,3 +1,4 @@
+
 public class vendingmachine {
 	
 	
@@ -8,7 +9,7 @@ public class vendingmachine {
 		boolean use_check = false;
 			
 		//使用可能な貨幣か確認
-		use_check = (money == 0 || money == 10  || money == 50 || money == 100 || money  == 500 || money == 1000);
+		use_check = (money == -1 ||  money == 0 || money == 10  || money == 50 || money == 100 || money  == 500 || money == 1000);
 		if(use_check == false) {
 			System.out.println("不正な金額入力です");
 		}
@@ -25,17 +26,16 @@ public class vendingmachine {
 	
 	
 	//CalcNumメソッド
-	public static int[] CalcNum(int num[], int money[]) {
-		for(int i = 0; i <= money.length-1; i++) {
-			//sum += money[i];
+	public static int[] CalcNum(int num[], int money) {
+		
 			
-			switch(money[i]) {
+			switch(money) {
 			case 10:
-				num[0] += 1;
+				num[4] += 1;
 				break;
 				
 			case 50:
-				num[1] += 1;
+				num[3] += 1;
 				break;
 				
 			case 100:
@@ -43,13 +43,14 @@ public class vendingmachine {
 				break;
 				
 			case 500:
-				num[3] += 1;
+				num[1] += 1;
 				break;
 				
-			default :
-				num[4] += 1;
+			case 1000:
+				num[0] += 1;
+				break;
+			default:
 			}
-		}
 		//System.out.printf("%4d円 %4d円 %4d円 %4d円 %4d円\n",10,50,100,500,1000);
 		//System.out.printf("%4d枚 %4d枚 %4d枚 %4d枚 %4d枚\n",num[0],num[1],num[2],num[3],num[4]);
 
@@ -123,7 +124,7 @@ public class vendingmachine {
 	
 	
 	//NoChangeメソッド
-	public static boolean[] NoChangeMethod(int NUM[]){
+	public static boolean[] NoChangeMethod(int NUM[],int MONEY[]){
 			
 		boolean nochange[] = new boolean[NUM.length];
 		//お釣りが４枚以下ならお釣り切れの判定
@@ -131,6 +132,7 @@ public class vendingmachine {
 			if(NUM[i] <= 4) {
 				//お釣りが４枚以下ならtrue
 				nochange[i] = true;
+				System.out.println(MONEY[i] +"円がありません");
 			}else {
 				//お釣りが５枚以上あるならならfalse
 				nochange[i] = false;
@@ -141,23 +143,28 @@ public class vendingmachine {
 	
 	
 	//CalcChangeメソッド
-	public static int[] Change(int sum, int NUM[], int VALUE[], int BUTTON) {
+	public static int[] Change(int sum, int NUM[], int VALUE[], int button) {
 		//おつり総額の計算
-		sum -= VALUE[BUTTON-1];
+		if(button == -1) {
+			
+		}else {
+			sum -= VALUE[button-1];
+		}
+		
 		System.out.println("おつりは"+sum+ "円");
 		
 		//おつりの内訳評価
 		//1000円札のおつりが出せるか
-		if((sum/1000) >= 1 && NUM[4] >= (sum/1000)) {
+		if((sum/1000) >= 1 && NUM[0] >= (sum/1000)) {
 			System.out.println("1000円札:" +sum/1000+"枚");
-			NUM[4] -= (sum/1000);
+			NUM[0] -= (sum/1000);
 			sum %= 1000;
 		}
 		
 		//500円玉のおつりが出せるか
-		if((sum/500) >= 1 && NUM[3] >= (sum/500)) {
+		if((sum/500) >= 1 && NUM[1] >= (sum/500)) {
 			System.out.println(" 500円玉:" +sum/500+"枚");
-			NUM[3] -= (sum/500);
+			NUM[1] -= (sum/500);
 			sum %= 500;
 		}
 				
@@ -169,15 +176,15 @@ public class vendingmachine {
 		}
 		
 		//50円のおつりが出せるか
-		if((sum/50) >= 1 && NUM[1] >= (sum/50)) {
+		if((sum/50) >= 1 && NUM[3] >= (sum/50)) {
 			System.out.println("  50円玉:" +sum/50+"枚");
-			NUM[1] -= (sum/50);
+			NUM[3] -= (sum/50);
 			sum %= 50;
 			}
 		//10円のおつりが出せるか
-				if((sum/10) >= 1 && NUM[0] >= (sum/10)) {
+				if((sum/10) >= 1 && NUM[4] >= (sum/10)) {
 					System.out.println("  10円玉:" +sum/10+"枚");
-					NUM[0] -= (sum/10);
+					NUM[4] -= (sum/10);
 					sum %= 10;
 				}
 	return NUM;
