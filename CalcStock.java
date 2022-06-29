@@ -6,13 +6,13 @@ class CalcStockclass{
 		int button = 1;
 
 		//表示
-		STOCK = ProductJudgeMethod(button, STOCK);
+		STOCK = CalcStockMethod(button, STOCK);
 		for (int i = 0; i < STOCK.length; i++){
 			System.out.println(STOCK[i]);
 		}
 	}
 
-	public static int[]  ProductJudgeMethod(int button, int STOCK[]){
+	public static int[]  CalcStockMethod(int button, int STOCK[]){
 		STOCK[button - 1] --;
 		return STOCK;
 	}
