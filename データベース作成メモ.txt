@@ -10,7 +10,7 @@ load data local infile 'C:/Users/Owner/Documents/vm_table_data/product.csv' into
 
 select * from product;
 
-create table manege (BUTTON tinyint PRIMARY KEY, SUMBOTLE int, SUM int, STOCK tinyint);
+create table manege (BUTTON tinyint PRIMARY KEY, SUMBOTTLE int, SUM int, STOCK tinyint);
 
 load data local infile 'C:/Users/Owner/Documents/vm_table_data/manage.csv' into table vendingmachine.manage fields terminated by ',' enclosed by '"';
 
