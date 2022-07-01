@@ -199,7 +199,7 @@ public class Vendingmachine {
 			if((sum/1000) >= 1 && NUM[4] >= (sum/1000)) {
 //					System.out.println("1000円札:" +sum/1000+"枚");
 				//NUM[4] -= (sum/1000);
-				turi[4] -= (sum/1000);
+				turi[4] += (sum/1000);
 				if(turi[4] <= NUM[4]) {
 					sum %= 1000;
 				}
@@ -208,7 +208,7 @@ public class Vendingmachine {
 			//500円玉のおつりが出せるか
 			if((sum/500) >= 1 && NUM[3] >= (sum/500)) {
 				//NUM[3] -= (sum/500);
-				turi[3] -= (sum/500);
+				turi[3] += (sum/500);
 				if(turi[3] <= NUM[3]) {
 					sum %= 500;
 				}
@@ -217,7 +217,7 @@ public class Vendingmachine {
 			//100円のおつりが出せるか
 			if((sum/100) >= 1 && NUM[2] >= (sum/100)) {
 				//NUM[2] -= (sum/100);
-				turi[2] -= (sum/100);
+				turi[2] += (sum/100);
 				if(turi[2] <= NUM[2]) {
 					sum %= 100;
 				}
@@ -226,7 +226,7 @@ public class Vendingmachine {
 			//50円のおつりが出せるか
 			if((sum/50) >= 1 && NUM[1] >= (sum/50)) {
 				//NUM[1] -= (sum/50);
-				turi[1] -= (sum/100);
+				turi[1] += (sum/100);
 				if(turi[1] <= NUM[1]) {
 					sum %= 50;
 				}
@@ -234,7 +234,7 @@ public class Vendingmachine {
 			//10円のおつりが出せるか
 			if((sum/10) >= 1 && NUM[0] >= (sum/10)) {
 				//NUM[0] -= (sum/10);
-				turi[0] -= (sum/10);
+				turi[0] += (sum/10);
 				if(turi[0] <= NUM[0]) {
 					sum %= 10;
 				}			}

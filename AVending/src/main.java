@@ -17,7 +17,7 @@ public class main {
 		String USER = "root";
 		String PASS = "";
 		// 変数の準備
-		
+		int allsum = 0;
 		String ID[] = new String[7];
 		String NAME[] = new String[7];
 		int VALUE[] = new int[7];
@@ -101,7 +101,7 @@ public class main {
     		int sum = 0;
     		
     		//自販機内総売り上げ金額
-    		int allsum = 0;
+    		
     		boolean summax;
     		boolean judge_product[],nochange[];
     		boolean canchange[] = new boolean[VALUE.length];		
@@ -119,9 +119,20 @@ public class main {
     			use_check = ven.checkuseMethod(money);
     			//管理者モード判定
     			if(money == -1) {
-    				//自販機内総売り上げメソッド
-    				allsum = ven.AllSum(allsum,SUM);
-    				System.out.println("自販機内売上合計表示");
+    				//自販機内総売り上げ計算
+        			allsum = ven.AllSum(allsum,SUM);
+    				System.out.println("管理者モードです");
+    				System.out.println("商品： 売上本数: 売上: 在庫");
+    				for( i=0;i<STOCK.length;i++) {
+    	    			System.out.println(NAME[i]+":"+SUMBOTTLE[i]+":"+SUM[i]+":"+STOCK[i]);
+    	    		}
+    				System.out.print("総売上金額：");
+    				System.out.println(allsum);
+    				System.out.println("金額  在庫");
+    				for( i=0;i<MONEY.length;i++) {
+    	    			System.out.println(MONEY[i]+":"+NUM[i]);
+    	    		}
+    				
     				break;
     			
     			}else if(use_check == true){//入力された金額が使用可能なら
@@ -166,9 +177,7 @@ public class main {
     		if(button == -1) {
     			System.out.println("返却レバーが押されました。返却金額は"+sum+"です");
     			sum = 0;
-//    			for( i=0;i<NUM.length;i++) {
-//    				System.out.println();
-//    			}
+
     			System.out.println("全額返金しました");
     		}else if(button >= 1 && button <= 7){
     			//お釣りの枚数計算
@@ -179,68 +188,72 @@ public class main {
     			SUMBOTTLE = ven.SumBottle(button,STOCK,SUMBOTTLE);
     			//各商品の売り上げ
     			SUM = ven.Sum(button,SUM,VALUE);
-    			//自販機内総売り上げ計算
-    			allsum = ven.AllSum(allsum,SUM);
+    			
+    			
+    			String sql4 = "update manage set sumbottle = ?,sum = ?,stock = ? where button = ?";
+        		for( i=0;i<BUTTON.length;i++) {
+    	    		
+    				stmt = con.prepareStatement(sql4);
+    				stmt.setInt(1,SUMBOTTLE[i]);
+    				stmt.setInt(2,SUM[i]);
+    				stmt.setInt(3,STOCK[i]);
+    				stmt.setInt(4,BUTTON[i]);
+    				stmt.executeUpdate();
+        		}
+        		String sql5 = "update money set num = ? where  money = ?";
+        		for( i=0;i<NUM.length;i++) {
+    	    		
+    				stmt = con.prepareStatement(sql5);
+    				stmt.setInt(1,NUM[i]);
+    				stmt.setInt(2,MONEY[i]);
+    				stmt.executeUpdate();
+        		}
     			
     		}
     		
-    		for( i=0;i<BUTTON.length;i++) {
-	    		String sql4 = "update manage set sumbottle = ?,sum = ?,stock = ? where button = ?";
-				stmt = con.prepareStatement(sql4);
-				stmt.setInt(1,SUMBOTTLE[i]);
-				stmt.setInt(2,SUM[i]);
-				stmt.setInt(3,STOCK[i]);
-				stmt.setInt(3,BUTTON[i]);
-				stmt.executeUpdate();
-    		}
+    		
+    		stmt = con.prepareStatement(sql2);
+            
+            rs2 = stmt.executeQuery();
+            i  = 0;
+            // 結果行をループ
+            while(rs2.next()){
+                // レコードの値
+            	BUTTON[i] = rs2.getInt("button");
+            	SUMBOTTLE[i] = rs2.getInt("sumbottle");
+            	SUM[i]= rs2.getInt("sum");
+            	STOCK[i]= rs2.getInt("stock");
+                //結果を表示する
+                System.out.format("%d: %d: %d: %5d",BUTTON[i],SUMBOTTLE[i],
+                		SUM[i],STOCK[i]);
+                System.out.println();
+                i++;
+            }
+            System.out.println();
+            
+            stmt = con.prepareStatement(sql3);
+            
+            rs3 = stmt.executeQuery();
+            i  = 0;
+            // 結果行をループ
+            while(rs3.next()){
+                // レコードの値
+            	MONEY[i] = rs3.getInt("money");
+            	NUM[i]= rs3.getInt("num");
+                //結果を表示する
+                System.out.format("%5d: %d",MONEY[i],NUM[i]);
+                System.out.println();
+                i++;
+            }
 
-    		for( i=0;i<STOCK.length;i++) {
-    			System.out.println(NAME[i]+":"+STOCK[i]);
-    			
-    		}
-    		
-    		
-    		for( i=0;i<STOCK.length;i++) {
-    			System.out.println(SUMBOTTLE[i]+":"+SUM[i]);
-    			
-    		}
-    		System.out.println(allsum);
-//            String sql4 = "update manage set sumbottle = ?, stock = ?";
-//            stmt = con.prepareStatement(sql4);
-//            stmt.setInt(1,SUMBOTTLE[i]);
-//            stmt.setInt(2,SUM[i]);
-//            stmt.setInt(3,STOCK[i]);
-//            stmt.executeUpdate();
-//            i  = 0;
+
             
             con.close();
 	    }catch (Exception e) {
 	    	System.out.println("JDBCデータベース接続エラー");
 	    }
         
-		//変数宣言
-		//商品名・値段
-//		String NAME[] = {"Cola", "Cola", "GreenTea", "Water", "Coffee", "EnergyDrink", "Yagult1000"};
-//		int VALUE[] = {130, 130, 110, 100, 110, 120, 150};
-//		//使用可の硬貨・紙幣
-//		int MONEY[] = {1000, 500, 100, 50, 10};
-//		//お釣り使用硬貨枚数
-//		int NUM[] = {0, 5, 0, 0, 200};
-//		//商品在庫
-//		int STOCK[] = {20,20,20,20,20,20,0};
-//		int BUTTON[] = { 1, 2, 3, 4, 5, 6, 7};
-		//入力する値の初期化
-		
-		
-		//for(int i=0;i<NUM.length;i++) {
-			//System.out.println(NUM[i]);
-		//}
-		
-		//System.out.print("うれしい");
-		
-		//int button = pur.InputButton();
-		
-		
+	
 	}
 
 }
