@@ -1,31 +1,31 @@
 import java.util.Scanner;
 
 public class Purchaser {
-	
-	public static int Input() {//お金の投入
+	//金額入力メソッド
+	public static int InputMethod() {//お金の投入
 		String inputtext = "";
 		int input = 0;
 		while(true) {
 			Scanner sc = new Scanner(System.in);
-			System.out.println("お金を投入してください。金額投入終了は0を押してください");
+			System.out.println("お金を投入してください。金額投入終了は0を押してください。");
 			inputtext = sc.next();
 			
 			try{
 				input = Integer.parseInt(inputtext);
 				break;
 			}catch(java.lang.NumberFormatException e) {
-				System.out.println("金額を入力してください");
+				System.out.println("不正な金額入力です。");
 			}
 		}
 		return input;
 	}
-	
-	public static int InputButton(boolean judgeproduct[],boolean canchange[]) {//ボタンの入力
+	//ボタン入力メソッド
+	public static int InputButtonMethod(boolean judgeproduct[],boolean canchange[]) {//ボタンの入力
 		String inputtext = "";
 		int inputbutton;
 		do {
 			Scanner sc = new Scanner(System.in);
-			System.out.println("ボタンを入力してください。返金は-1を押してください"+ "");
+			System.out.println("ボタンを入力してください。返金は-1を押してください。"+ "");
 			inputtext = sc.next();
 			try{
 				inputbutton = Integer.parseInt(inputtext);
