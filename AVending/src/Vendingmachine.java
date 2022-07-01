@@ -31,11 +31,11 @@ public class Vendingmachine {
 			
 			switch(money) {
 			case 10:
-				num[4] += 1;
+				num[0] += 1;
 				break;
 				
 			case 50:
-				num[3] += 1;
+				num[1] += 1;
 				break;
 				
 			case 100:
@@ -43,11 +43,11 @@ public class Vendingmachine {
 				break;
 				
 			case 500:
-				num[1] += 1;
+				num[3] += 1;
 				break;
 				
 			case 1000:
-				num[0] += 1;
+				num[4] += 1;
 				break;
 			default:
 			}
@@ -191,42 +191,58 @@ public class Vendingmachine {
 	//CalcChangeメソッド
 		public static boolean Can_Change(int sum, int NUM[], int VALUE[], int button) {
 			boolean canchange = false;
+			int[] turi = {0, 0, 0, 0, 0};
 			//おつり総額の計算
 			sum -= VALUE[button];
 			
 			//1000円札のおつりが出せるか
 			if((sum/1000) >= 1 && NUM[4] >= (sum/1000)) {
 //					System.out.println("1000円札:" +sum/1000+"枚");
-				NUM[4] -= (sum/1000);
-				sum %= 1000;
+				//NUM[4] -= (sum/1000);
+				turi[4] -= (sum/1000);
+				if(turi[4] <= NUM[4]) {
+					sum %= 1000;
+				}
 			}
 			
 			//500円玉のおつりが出せるか
 			if((sum/500) >= 1 && NUM[3] >= (sum/500)) {
-				NUM[3] -= (sum/500);
-				sum %= 500;
+				//NUM[3] -= (sum/500);
+				turi[3] -= (sum/500);
+				if(turi[3] <= NUM[3]) {
+					sum %= 500;
+				}
 			}
 					
 			//100円のおつりが出せるか
 			if((sum/100) >= 1 && NUM[2] >= (sum/100)) {
-				NUM[2] -= (sum/100);
-				sum %= 100;
+				//NUM[2] -= (sum/100);
+				turi[2] -= (sum/100);
+				if(turi[2] <= NUM[2]) {
+					sum %= 100;
+				}
 			}
 			
 			//50円のおつりが出せるか
 			if((sum/50) >= 1 && NUM[1] >= (sum/50)) {
-				NUM[1] -= (sum/50);
-				sum %= 50;
+				//NUM[1] -= (sum/50);
+				turi[1] -= (sum/100);
+				if(turi[1] <= NUM[1]) {
+					sum %= 50;
 				}
+			}
 			//10円のおつりが出せるか
 			if((sum/10) >= 1 && NUM[0] >= (sum/10)) {
-				NUM[0] -= (sum/10);
-				sum %= 10;
-			}
+				//NUM[0] -= (sum/10);
+				turi[0] -= (sum/10);
+				if(turi[0] <= NUM[0]) {
+					sum %= 10;
+				}			}
 			
 			if (sum == 0) {
 				canchange = true;
 			}
+			
 			return canchange;
 		}
 	
@@ -236,13 +252,24 @@ public class Vendingmachine {
 		return STOCK;
 	}
 	
+	//SUMBOOTTLEメソッド
+	public static int[]  SumBottle(int button, int STOCK[],int SUMBOTTLE[]){
+		SUMBOTTLE[button - 1] ++;
+		return SUMBOTTLE;
+	}
 	
-	
+	//Sum
+	public static int[]  Sum(int button,int SUM[],int VALUE[]){
+		SUM[button - 1] += VALUE[button - 1];
+	return SUM;
+}
 	//AllSumメソッド
-	public static int AllSum(int allsum, int sum) {
+	public static int AllSum(int allsum, int sum[]) {
 		//int allsum = 0;
-		allsum = allsum + sum;
-		
+		for(int i = 0; i< sum.length;i++) {
+			allsum = allsum + sum[i];
+		}
+
 		return allsum;
 	}
 

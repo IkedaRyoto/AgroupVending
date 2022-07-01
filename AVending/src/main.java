@@ -32,7 +32,7 @@ public class main {
 		int NUM[] = new int[5];
         Connection con = null;
         PreparedStatement stmt = null;
-        ResultSet rs1 = null,rs2 = null,rs3 = null;
+        ResultSet rs1 = null,rs2 = null,rs3 = null,rs4 = null;
         
         int i = 0;
         try {
@@ -45,9 +45,9 @@ public class main {
             rs1 = stmt.executeQuery();
             
             // 結果行をループ
+            i = 0;
             while(rs1.next()){
                 // レコードの値]
-            	i = 0;
             	ID[i] = rs1.getString("id");
             	NAME[i] = rs1.getString("name");
             	VALUE[i]= rs1.getInt("value");
@@ -94,6 +94,125 @@ public class main {
                 System.out.println();
                 i++;
             }
+            int money = 0;
+    		int button = 0;
+    		boolean use_check = false;
+    		//投入金額合計
+    		int sum = 0;
+    		
+    		//自販機内総売り上げ金額
+    		int allsum = 0;
+    		boolean summax;
+    		boolean judge_product[],nochange[];
+    		boolean canchange[] = new boolean[VALUE.length];		
+    		
+    		//購入可能商品判定
+    		judge_product = ven.productjudgeMethod(STOCK);
+    		
+    		nochange = ven.NoChangeMethod(NUM,MONEY);
+    		
+    		//金額入力フェーズ
+    		do {
+    			//金額入力メソッド
+    			money = pur.Input();
+    			//金額入力メソッド
+    			use_check = ven.checkuseMethod(money);
+    			//管理者モード判定
+    			if(money == -1) {
+    				//自販機内総売り上げメソッド
+    				allsum = ven.AllSum(allsum,SUM);
+    				System.out.println("自販機内売上合計表示");
+    				break;
+    			
+    			}else if(use_check == true){//入力された金額が使用可能なら
+    				//投入金額の枚数メソッド
+    				NUM = ven.CalcNum(NUM,money);	
+    				for(i = 0;i<NUM.length;i++) {
+    					System.out.println(NUM[i]+ "\t");
+    				}
+    				//投入金額の計算
+    				sum += money;
+    				//投入合計金額が上限を超えていないか判定メソッド
+    				summax = ven.SumMaxMethod(sum);
+    				
+    				
+    				
+    				if(summax == false) {
+    					//購入可能商品表示
+    					//turi = ven.Change(sum,NUM,VALUE,button);
+    					for (int m = 0; m < BUTTON.length; m++) {
+    						canchange[m] = ven.Can_Change(sum, NUM, VALUE, m);
+    						//System.out.println(canchange[m]+ "\t");
+    					}
+    					ven.can(sum,NAME,VALUE,STOCK,BUTTON, canchange);
+    					
+    				}
+    				else {
+    					
+    					NUM = ven.Change(sum,NUM,VALUE,-1);
+    					sum = 0;
+    					System.out.println("全額返金しました");
+    					continue;
+    				}
+    				
+    			}
+    				
+    		
+    		}while(money != 0);
+
+    		//ボタン選択フェーズ
+    		button = pur.InputButton(judge_product , canchange);
+    			
+    		if(button == -1) {
+    			System.out.println("返却レバーが押されました。返却金額は"+sum+"です");
+    			sum = 0;
+//    			for( i=0;i<NUM.length;i++) {
+//    				System.out.println();
+//    			}
+    			System.out.println("全額返金しました");
+    		}else if(button >= 1 && button <= 7){
+    			//お釣りの枚数計算
+    			NUM = ven.Change(sum,NUM,VALUE,button);
+    			//商品在庫減算
+    			STOCK = ven.CalcStockMethod(button,STOCK);
+    			//合計売り上げ本数の加算
+    			SUMBOTTLE = ven.SumBottle(button,STOCK,SUMBOTTLE);
+    			//各商品の売り上げ
+    			SUM = ven.Sum(button,SUM,VALUE);
+    			//自販機内総売り上げ計算
+    			allsum = ven.AllSum(allsum,SUM);
+    			
+    		}
+    		
+    		for( i=0;i<BUTTON.length;i++) {
+	    		String sql4 = "update manage set sumbottle = ?,sum = ?,stock = ? where button = ?";
+				stmt = con.prepareStatement(sql4);
+				stmt.setInt(1,SUMBOTTLE[i]);
+				stmt.setInt(2,SUM[i]);
+				stmt.setInt(3,STOCK[i]);
+				stmt.setInt(3,BUTTON[i]);
+				stmt.executeUpdate();
+    		}
+
+    		for( i=0;i<STOCK.length;i++) {
+    			System.out.println(NAME[i]+":"+STOCK[i]);
+    			
+    		}
+    		
+    		
+    		for( i=0;i<STOCK.length;i++) {
+    			System.out.println(SUMBOTTLE[i]+":"+SUM[i]);
+    			
+    		}
+    		System.out.println(allsum);
+//            String sql4 = "update manage set sumbottle = ?, stock = ?";
+//            stmt = con.prepareStatement(sql4);
+//            stmt.setInt(1,SUMBOTTLE[i]);
+//            stmt.setInt(2,SUM[i]);
+//            stmt.setInt(3,STOCK[i]);
+//            stmt.executeUpdate();
+//            i  = 0;
+            
             con.close();
 	    }catch (Exception e) {
 	    	System.out.println("JDBCデータベース接続エラー");
@@ -111,94 +230,7 @@ public class main {
 //		int STOCK[] = {20,20,20,20,20,20,0};
 //		int BUTTON[] = { 1, 2, 3, 4, 5, 6, 7};
 		//入力する値の初期化
-		int money = 0;
-		int button = 0;
-		boolean use_check = false;
-		//投入金額合計
-		int sum = 0;
-		int turi[] = {0, 0, 0, 0, 0};
-		//自販機内総売り上げ金額
-		int allsum = 0;
-		boolean summax;
-		boolean judge_product[],nochange[];
-		boolean canchange[] = new boolean[VALUE.length];		
 		
-		//購入可能商品判定
-		judge_product = ven.productjudgeMethod(STOCK);
-		
-		nochange = ven.NoChangeMethod(NUM,MONEY);
-		
-		i =0;
-		//金額入力フェーズ
-		do {
-			//金額入力メソッド
-			money = pur.Input();
-			//金額入力メソッド
-			use_check = ven.checkuseMethod(money);
-			//管理者モード判定
-			if(money == -1) {
-				//自販機内総売り上げメソッド
-				allsum = ven.AllSum(allsum,sum);
-				System.out.println("自販機内売上合計表示");
-				break;
-			
-			}else if(use_check == true){//入力された金額が使用可能なら
-				//投入金額の枚数メソッド
-				NUM = ven.CalcNum(NUM,money);	
-				//投入金額の計算
-				sum += money;
-				//投入合計金額が上限を超えていないか判定メソッド
-				summax = ven.SumMaxMethod(sum);
-				
-				
-				
-				if(summax == false) {
-					//購入可能商品表示
-					//turi = ven.Change(sum,NUM,VALUE,button);
-					for (int m = 0; m < BUTTON.length; m++) {
-						canchange[m] = ven.Can_Change(sum, NUM, VALUE, m);
-					}
-					ven.can(sum,NAME,VALUE,STOCK,BUTTON, canchange);
-					
-				}
-				else {
-					
-					NUM = ven.Change(sum,NUM,VALUE,-1);
-					sum = 0;
-					System.out.println("全額返金しました");
-					continue;
-				}
-				
-			}
-				
-		
-		}while(money != 0);
-//		for( i = 0;i<nochange.length; i++) {
-//			sum = 0;
-//			System.out.println("全額返金しました");
-//		}
-//		
-//		for( i=0;i<NUM.length;i++) {
-//			System.out.println(NUM[i]);
-//		}
-		
-		//ボタン選択フェーズ
-		button = pur.InputButton(judge_product , canchange);
-			
-		if(button == -1) {
-			System.out.println("返却レバーが押されました。返却金額は"+sum+"です");
-			sum = 0;
-			System.out.println("全額返金しました");
-		}else if(button >= 1 && button <= 7){
-			
-			NUM = ven.Change(sum,NUM,VALUE,button);
-			STOCK = ven.CalcStockMethod(button,STOCK);
-			
-		}
-		
-		for( i=0;i<STOCK.length;i++) {
-			System.out.println(NAME[i]+":"+STOCK[i]);
-		}
 		
 		//for(int i=0;i<NUM.length;i++) {
 			//System.out.println(NUM[i]);
