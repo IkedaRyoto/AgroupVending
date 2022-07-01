@@ -93,7 +93,7 @@ public class main {
     		boolean canchange[] = new boolean[VALUE.length];		
     		
     		//購入可能商品判定
-    		judge_product = ven.productjudgeMethod(STOCK);
+    		judge_product = ven.ProductJudgeMethod(STOCK);
     		//お釣り切れの場合
     		nochange = ven.NoChangeMethod(NUM,MONEY);
     		
@@ -102,7 +102,7 @@ public class main {
     			//金額入力メソッド
     			money = pur.InputMethod();
     			//金額入力メソッド
-    			use_check = ven.checkuseMethod(money);
+    			use_check = ven.CheckUseMethod(money);
     			//管理者モード判定
     			if(money == -1) {//-1なら管理者モードへ移行
     				//自販機内総売り上げ計算メソッド
@@ -147,13 +147,12 @@ public class main {
     					ven.CanBuyMethod(sum,NAME,VALUE,STOCK,BUTTON, canchange);
     				}
     				else {//現状の在庫金額でお釣りが返せない場合
-    					NUM = ven.ChangeMethod(sum,NUM,VALUE,-1);
+    					NUM = ven.CalcChangeMethod(sum,NUM,VALUE,-1);
     					sum = 0;
     					System.out.println("全額返金しました。");
     					continue;
     				}
     			}
-    		
     		}while(money != 0);
     		//ボタン選択フェーズに行く前に管理者モードに入っていたかのチェック
     		if(money == -1) {//-1ならばボタン選択フェーズは行わない
@@ -168,16 +167,16 @@ public class main {
         			sum = 0;
 
         			System.out.println("全額返金しました。");
-        		}else if(button >= 1 && button <= 7){
+        		}else if(button >= 1 && button <= 7){//正しいボタン(1～7)を押された場合
         			System.out.println(NAME[button - 1]+"を購入しました。");
         			//お釣りの枚数計算
-        			NUM = ven.ChangeMethod(sum,NUM,VALUE,button);
+        			NUM = ven.CalcChangeMethod(sum,NUM,VALUE,button);
         			//商品在庫減算
         			STOCK = ven.CalcStockMethod(button,STOCK);
         			//合計売り上げ本数の加算
-        			SUMBOTTLE = ven.SumBottle(button,STOCK,SUMBOTTLE);
+        			SUMBOTTLE = ven.SumBottleMethod(button,STOCK,SUMBOTTLE);
         			//各商品の売り上げ
-        			SUM = ven.Sum(button,SUM,VALUE);
+        			SUM = ven.SumMethod(button,SUM,VALUE);
         			// SQLを実行4
         			//SQL分の実行4(manageテーブルをアップデート)
         			String sql4 = "update manage set sumbottle = ?,sum = ?,stock = ? where button = ?";

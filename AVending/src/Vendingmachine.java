@@ -1,8 +1,8 @@
 
 public class Vendingmachine {
 
-	//checkuseメソッド
-	public boolean checkuseMethod(int money){
+	//checkuseメソッド(使用可能硬貨・紙幣判定)
+	public boolean CheckUseMethod(int money){
 			
 		boolean use_check = false;
 			
@@ -16,8 +16,6 @@ public class Vendingmachine {
 	
 	//CalcNumメソッド(投入金額の枚数カウント)
 	public static int[] CalcNumMethod(int num[], int money) {
-		
-			
 			switch(money) {
 			case 10:
 				num[0] += 1;
@@ -43,8 +41,8 @@ public class Vendingmachine {
 		return num;
 	}
 	
-	//productjudgeメソッド
-	public boolean []  productjudgeMethod(int STOCK[]){
+	//ProductJudgeメソッド(商品在庫判定)
+	public boolean []  ProductJudgeMethod(int STOCK[]){
 		
 		// boolen配列を宣言
 		boolean judge_product [] = new boolean[STOCK.length];
@@ -76,9 +74,7 @@ public class Vendingmachine {
 	return summax;	
 	}
 	
-	
-	
-	//CanBuyメソッド
+	//CanBuyメソッド(購入可否判定)
 	public static void CanBuyMethod(int tounyu, String namae[], int[] nedan, int[] zaiko, int[] botan, boolean[] canchange) {
 		System.out.println("投入金額:" +tounyu+ "円");
 		System.out.format("%s: %9s: %5s: %5s","ボタン"," 商品" ,"値段", "購入可能可否");
@@ -102,9 +98,7 @@ public class Vendingmachine {
 		}
 	}
 	
-	
-	
-	//NoChangeメソッド
+	//NoChangeメソッド(お釣りの在庫判定)
 	public static boolean[] NoChangeMethod(int NUM[],int MONEY[]){
 			
 		boolean nochange[] = new boolean[NUM.length];
@@ -123,9 +117,8 @@ public class Vendingmachine {
 		return nochange;
 	}		
 	
-	
-	//Changeメソッド
-	public static int[] ChangeMethod(int sum, int NUM[], int VALUE[], int button) {
+	//CalcChangeメソッド(お釣り計算)
+	public static int[] CalcChangeMethod(int sum, int NUM[], int VALUE[], int button) {
 		//おつり総額の計算
 		if(button == -1) {
 			
@@ -168,75 +161,74 @@ public class Vendingmachine {
 	}
 	
 	//CanChangeメソッド(投入金額に対して商品購入後、お釣りが返金できるかの判定)
-		public static boolean CanChangeMethod(int sum, int NUM[], int VALUE[], int button) {
-			boolean canchange = false;
-			int[] turi = {0, 0, 0, 0, 0};
-			//おつり総額の計算
-			sum -= VALUE[button];
-			//1000円札のおつりが出せるか
-			if((sum/1000) >= 1 && NUM[4] >= (sum/1000)) {
-				turi[4] += (sum/1000);
-				if(turi[4] <= NUM[4]) {
-					sum %= 1000;
-				}
+	public static boolean CanChangeMethod(int sum, int NUM[], int VALUE[], int button) {
+		boolean canchange = false;
+		int[] turi = {0, 0, 0, 0, 0};
+		//おつり総額の計算
+		sum -= VALUE[button];
+		//1000円札のおつりが出せるか
+		if((sum/1000) >= 1 && NUM[4] >= (sum/1000)) {
+			turi[4] += (sum/1000);
+			if(turi[4] <= NUM[4]) {
+				sum %= 1000;
 			}
-			//500円玉のおつりが出せるか
-			if((sum/500) >= 1 && NUM[3] >= (sum/500)) {
-				turi[3] += (sum/500);
-				if(turi[3] <= NUM[3]) {
-					sum %= 500;
-				}
-			}	
-			//100円のおつりが出せるか
-			if((sum/100) >= 1 && NUM[2] >= (sum/100)) {
-				turi[2] += (sum/100);
-				if(turi[2] <= NUM[2]) {
-					sum %= 100;
-				}
-			}
-			//50円のおつりが出せるか
-			if((sum/50) >= 1 && NUM[1] >= (sum/50)) {
-				turi[1] += (sum/100);
-				if(turi[1] <= NUM[1]) {
-					sum %= 50;
-				}
-			}
-			//10円のおつりが出せるか
-			if((sum/10) >= 1 && NUM[0] >= (sum/10)) {
-				turi[0] += (sum/10);
-				if(turi[0] <= NUM[0]) {
-					sum %= 10;
-				}			}
-			if (sum == 0) {//投入金額合計が0になればtrueを入れる
-				canchange = true;
-			}
-			return canchange;
 		}
+		//500円玉のおつりが出せるか
+		if((sum/500) >= 1 && NUM[3] >= (sum/500)) {
+			turi[3] += (sum/500);
+			if(turi[3] <= NUM[3]) {
+				sum %= 500;
+			}
+		}	
+		//100円のおつりが出せるか
+		if((sum/100) >= 1 && NUM[2] >= (sum/100)) {
+			turi[2] += (sum/100);
+			if(turi[2] <= NUM[2]) {
+				sum %= 100;
+			}
+		}
+		//50円のおつりが出せるか
+		if((sum/50) >= 1 && NUM[1] >= (sum/50)) {
+			turi[1] += (sum/100);
+			if(turi[1] <= NUM[1]) {
+				sum %= 50;
+			}
+		}
+		//10円のおつりが出せるか
+		if((sum/10) >= 1 && NUM[0] >= (sum/10)) {
+			turi[0] += (sum/10);
+			if(turi[0] <= NUM[0]) {
+				sum %= 10;
+			}			}
+		if (sum == 0) {//投入金額合計が0になればtrueを入れる
+			canchange = true;
+		}
+		return canchange;
+	}
 	
-	//CalcStockメソッド
+	//CalcStockメソッド(商品在庫計算)
 	public static int[]  CalcStockMethod(int button, int STOCK[]){
 		STOCK[button - 1] --;
 		return STOCK;
 	}
 	
-	//SUMBOOTTLEメソッド
-	public static int[]  SumBottle(int button, int STOCK[],int SUMBOTTLE[]){
+	//SumBottleメソッド(売上本数計算)
+	public static int[]  SumBottleMethod(int button, int STOCK[],int SUMBOTTLE[]){
 		SUMBOTTLE[button - 1] ++;
 		return SUMBOTTLE;
 	}
 	
-	//Sum
-	public static int[]  Sum(int button,int SUM[],int VALUE[]){
+	//Sumメソッド(商品ごとの売上金額計算)
+	public static int[]  SumMethod(int button,int SUM[],int VALUE[]){
 		SUM[button - 1] += VALUE[button - 1];
 	return SUM;
 }
-	//AllSumメソッド
+	//AllSumメソッド(自販機内の総売り上げ金額計算)
 	public static int AllSumMethod(int allsum, int sum[]) {
 		//int allsum = 0;
 		for(int i = 0; i< sum.length;i++) {
 			allsum = allsum + sum[i];
 		}
-
 		return allsum;
 	}
 
